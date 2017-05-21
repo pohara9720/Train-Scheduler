@@ -38,11 +38,15 @@ h1,p{
   margin: 15px;
 }
 #Submit{
-  background-color: #C8B5AA; 
+  background-color: #FCEAD6 !important;
 }
 table{
   background-color: #FCEAD6 !important;
 }
+.panel {
+     background-color:#D7CECC !important;
+}
+
 </style>
 <!--End of Style Sheet-->
 <!DOCTYPE html>
@@ -77,13 +81,11 @@ table{
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
                     <div class="panel-heading">Current Train Schedule</div>
-                    <div class="panel-body">
-
-                    </div>
+                  <!--   <div class="panel-body"></div> -->
                     <!-- Table -->
                     <table class="table table-striped">
                         <tbody>
-                          <tr><td>Train Name</td><td>Destination</td><td>Frequency</td><td>Next Arrival</td><td>Minutes to Arrival</td></tr>
+                          <tr><td>Train Name</td><td>Destination</td><td>Frequency (Min.)</td><td>Next Arrival</td><td>Minutes to Arrival</td></tr>
                          <!--  <tr><td class="tableInfo" id="tableTrainName">asdasda</td><td class="tableInfo" id="tableDestination">asdasd</td><td class="tableInfo" id="tableFrequency">asdasd</td><td class="tableInfo" id="tableNextArrival">asdasd</td><td class="tableInfo" id="tableMinutes">asdad</td></tr> -->
 
                         </tbody>
@@ -125,6 +127,7 @@ table{
         </div>
     </div>
     <!--JAVASCRIPT-->
+     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
     <script>
     // Initialize Firebase
@@ -143,9 +146,10 @@ table{
     var destination="";
     var firstTrain=0;
     var Frequency=0;
+     
+    
 
-
-
+   
 
     $("#Submit").on("click",function(){
         event.preventDefault();
@@ -163,11 +167,19 @@ table{
 
         });
 
-        database.ref().on("child_added",function(snapshot){
-            $(".table").append("<tr><td>" + name + "</td><td>" + destination + "</td><td>" + Frequency + "</td><td>" + "math for next arrival time" + "<t/d><td>" + "math for minutes to go" + "</td><tr>")
+    });
+      database.ref().on("child_added",function(snapshot){
+       var math = snapshot.val().Time;
+        var until = moment().endOf().fromNow(math);
+
+
+            $(".table").append("<tr><td>" + snapshot.val().Train + "</td><td>" + snapshot.val().Destination + "</td><td>" + snapshot.val().Frequency + "</td><td>" + snapshot.val().Time + "<t/d><td>" + until + "</td><tr>")
+            
+            
+
         });
 
-    });
+
     </script>
 </body>
 
