@@ -83,7 +83,7 @@ table{
                     <div class="panel-heading">Current Train Schedule</div>
                   <!--   <div class="panel-body"></div> -->
                     <!-- Table -->
-                    <table class="table table-striped">
+                    <table class="table table-striped ">
                         <tbody>
                           <tr><td>Train Name</td><td>Destination</td><td>Frequency (Min.)</td><td>Next Arrival</td><td>Minutes to Arrival</td></tr>
                          <!--  <tr><td class="tableInfo" id="tableTrainName">asdasda</td><td class="tableInfo" id="tableDestination">asdasd</td><td class="tableInfo" id="tableFrequency">asdasd</td><td class="tableInfo" id="tableNextArrival">asdasd</td><td class="tableInfo" id="tableMinutes">asdad</td></tr> -->
@@ -110,11 +110,11 @@ table{
                         <input type="text" class="form-control" id="destination" placeholder="Enter Destination">
                     </div>
                     <div class="form-group">
-                        <label>First Train Time</label>
-                        <input type="time" class="form-control" id="trainTime" placeholder="Enter Time of Train">
+                        <label>Current Time 00:00</label>
+                        <input type="text" class="form-control" id="trainTime" placeholder="Enter Time of Train">
                     </div>
                     <div class="form-group">
-                        <label>Frequency</label>
+                        <label>Frequency </label>
                         <input type="number" class="form-control" id="frequency" placeholder="Enter Frequency of Train">
                     </div>
                     <center>
@@ -169,11 +169,29 @@ table{
 
     });
       database.ref().on("child_added",function(snapshot){
-       var math = snapshot.val().Time;
-        var until = moment().endOf().fromNow(math);
+       // var math = snapshot.val().Time;
+       //  var until = moment().endOf().fromNow(math);
+
+        var trainFreq = snapshot.val().Frequency;
+
+    var firstTrainTime = snapshot.val().Time;
+
+    var timeConverted = moment(firstTrainTime, "hh:mm").subtract(1, "years");
+
+    var currentTime = moment();
+
+    var timeDifference = moment().diff(moment(timeConverted), "minutes");
+
+    var remainder = timeDifference % trainFreq;
+    
+    var minutes = trainFreq - remainder;
+  
+    var nextTrain = moment().add(minutes, "minutes");
+    var nextTrainFormat = moment(nextTrain).format("hh:mm");
+   
 
 
-            $(".table").append("<tr><td>" + snapshot.val().Train + "</td><td>" + snapshot.val().Destination + "</td><td>" + snapshot.val().Frequency + "</td><td>" + snapshot.val().Time + "<t/d><td>" + until + "</td><tr>")
+            $(".table").append("<tr><td>" + snapshot.val().Train + "</td><td>" + snapshot.val().Destination + "</td><td>" + snapshot.val().Frequency + "</td><td>" + nextTrainFormat + "<t/d><td>" + minutes + "</td><tr>")
             
             
 
